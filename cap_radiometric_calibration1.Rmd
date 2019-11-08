@@ -1,0 +1,746 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.1'
+      jupytext_version: 1.2.4
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+---
+
+```{python}
+# %matplotlib notebook
+import micasense.plotutils as plotutils
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+import os,glob
+import math
+
+import os, glob
+from micasense.image import Image
+from micasense.panel import Panel
+import micasense.dls as dls
+import micasense.capture as capture
+
+import micasense.metadata as metadata
+import micasense.utils as msutils
+from skimage import measure
+
+from osgeo import gdal, osr
+import subprocess
+
+import Radio_calib_cap as RaCaCap
+```
+
+##  2019-10-18-beihaihongshulin1 panel 100m5ms
+
+```{python}
+fold = '/media/jxd/无人机数据备份盘1/integration_system/data'
+day = '2019-10-18-beihaihongshulin1'
+height = '191018_115418_100m5ms_1'
+number = ['000', '001', '002', '003', '004', '005','006', '007']
+src_fold = '0001SET'
+dst_fold = '0001SET_ref_panel'
+imagePath0 = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', src_fold, number[0])
+outPath0 = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', dst_fold, number[0])
+
+imageNames = []
+outImageNames = []
+for num in range(10):
+    filename = 'IMG_000' + str(num) +'_'
+    
+    imageName = os.path.join(imagePath0, filename)
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+    
+for num in range(10, 99):
+    filename = 'IMG_00' + str(num) +'_' 
+    
+    imageName = os.path.join(imagePath0, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+    
+for num in range(100, 200):
+    filename = 'IMG_0' + str(num) +'_' 
+    
+    imageName = os.path.join(imagePath0, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+
+for k in [1]:
+    imagePathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', src_fold, number[k])
+    outPathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                             'Camera_1', dst_fold, number[k])
+    for num in range(200*k, 200*k+200):
+            filename = 'IMG_0' + str(num) +'_' 
+            imageName = os.path.join(imagePathk, filename )
+            imageNames.append(imageName)
+
+            outImageName = os.path.join(outPathk, filename)
+            outImageNames.append(outImageName)
+
+            
+imagePathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                     'Camera_1', src_fold, number[2])
+outPathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', dst_fold, number[2])
+for num in range(400, 504):
+    filename = 'IMG_0' + str(num) +'_'
+    
+    imageName = os.path.join(imagePathk, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPathk, filename)
+    outImageNames.append(outImageName)
+
+
+```
+
+```{python}
+RC = RaCaCap.RadioCalibrate()
+
+panelFile = []
+for i in range(1,6):
+    panelFile.append(os.path.join(imagePath0, 'IMG_0002_' + str(i) + '.tif'))
+
+RC.loadPanel(panelFile)
+panelCorners = [[[1642,901],[1356,869],[1386,630],[1629,664]],
+                [[1768,894],[1520,861],[1554,647],[1797,664]],
+                [[1772,802],[1524,752],[1541,542],[1797,559]],
+                [[1617,785],[1365,751],[1415,541],[1650,558]],
+                [[1688,839],[1453,806],[1478,587],[1700,608]]]
+RC.panelCap.set_panelCorners(panelCorners)
+RC.computeRa2Re()
+```
+
+```{python}
+for k in range(len(imageNames)):
+    RC.loadImage(imageNames[k])
+    RC.save_undistorted_reflectance(outImageNames[k])
+```
+
+```{python}
+
+```
+
+##  2019-10-18-beihaihongshulin1 panel 80m5ms
+
+```{python}
+fold = '/media/jxd/无人机数据备份盘1/integration_system/data'
+day = '2019-10-18-beihaihongshulin1'
+height = '191018_125227_80m5ms_1'
+number = ['000', '001', '002', '003', '004', '005','006', '007']
+src_fold = '0000SET'
+dst_fold = '0000SET_ref_panel'
+imagePath0 = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', src_fold, number[0])
+outPath0 = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', dst_fold, number[0])
+
+imageNames = []
+outImageNames = []
+for num in range(10):
+    filename = 'IMG_000' + str(num) +'_'
+    
+    imageName = os.path.join(imagePath0, filename)
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+    
+for num in range(10, 99):
+    filename = 'IMG_00' + str(num) +'_' 
+    
+    imageName = os.path.join(imagePath0, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+    
+for num in range(100, 200):
+    filename = 'IMG_0' + str(num) +'_' 
+    
+    imageName = os.path.join(imagePath0, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+
+for k in [1]:
+    imagePathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', src_fold, number[k])
+    outPathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                             'Camera_1', dst_fold, number[k])
+    for num in range(200*k, 200*k+200):
+            filename = 'IMG_0' + str(num) +'_' 
+            imageName = os.path.join(imagePathk, filename )
+            imageNames.append(imageName)
+
+            outImageName = os.path.join(outPathk, filename)
+            outImageNames.append(outImageName)
+
+            
+imagePathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                     'Camera_1', src_fold, number[2])
+outPathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', dst_fold, number[2])
+for num in range(400, 493):
+    filename = 'IMG_0' + str(num) +'_'
+    
+    imageName = os.path.join(imagePathk, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPathk, filename)
+    outImageNames.append(outImageName)
+
+
+```
+
+```{python}
+RC = RaCaCap.RadioCalibrate()
+
+panelFile = []
+for i in range(1,6):
+    panelFile.append(os.path.join(imagePath0, 'IMG_0000_' + str(i) + '.tif'))
+
+RC.loadPanel(panelFile)
+panelCorners = [[[1293,1056],[790,1363],[483,825],[1016,540]],
+                [[1604,1056],[1130,1329],[844,834],[1352,564]],
+                [[1629,871],[1113,1106],[832,619],[1314,355]],
+                [[1310,841],[790,1114],[500,631],[1008,338]],
+                [[1415,942],[972,1219],[685,741],[1142,476]]]
+RC.panelCap.set_panelCorners(panelCorners)
+RC.computeRa2Re()
+```
+
+```{python}
+for k in range(len(imageNames)):
+    RC.loadImage(imageNames[k])
+    RC.save_undistorted_reflectance(outImageNames[k])
+```
+
+```{python}
+
+```
+
+##  2019-10-18-beihaihongshulin1 panel 80m5ms_2
+
+```{python}
+fold = '/media/jxd/无人机数据备份盘1/integration_system/data'
+day = '2019-10-18-beihaihongshulin1'
+height = '191018_141738_80m5ms_2'
+number = ['000', '001', '002', '003', '004', '005','006', '007']
+src_fold = '0000SET'
+dst_fold = '0000SET_ref_panel'
+imagePath0 = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', src_fold, number[0])
+outPath0 = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', dst_fold, number[0])
+
+imageNames = []
+outImageNames = []
+for num in range(10):
+    filename = 'IMG_000' + str(num) +'_'
+    
+    imageName = os.path.join(imagePath0, filename)
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+    
+for num in range(10, 99):
+    filename = 'IMG_00' + str(num) +'_' 
+    
+    imageName = os.path.join(imagePath0, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+    
+for num in range(100, 200):
+    filename = 'IMG_0' + str(num) +'_' 
+    
+    imageName = os.path.join(imagePath0, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+
+for k in [1]:
+    imagePathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', src_fold, number[k])
+    outPathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                             'Camera_1', dst_fold, number[k])
+    for num in range(200*k, 200*k+200):
+            filename = 'IMG_0' + str(num) +'_' 
+            imageName = os.path.join(imagePathk, filename )
+            imageNames.append(imageName)
+
+            outImageName = os.path.join(outPathk, filename)
+            outImageNames.append(outImageName)
+
+            
+imagePathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                     'Camera_1', src_fold, number[2])
+outPathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', dst_fold, number[2])
+for num in range(400, 517):
+    filename = 'IMG_0' + str(num) +'_'
+    
+    imageName = os.path.join(imagePathk, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPathk, filename)
+    outImageNames.append(outImageName)
+
+
+```
+
+```{python}
+RC = RaCaCap.RadioCalibrate()
+
+panelFile = []
+for i in range(1,6):
+    panelFile.append(os.path.join(imagePath0, 'IMG_0000_' + str(i) + '.tif'))
+
+RC.loadPanel(panelFile)
+panelCorners = [[[920,1170],[483,1153],[475,704],[932,704]],
+                [[1184,1161],[735,1157],[760,754],[1209,716]],
+                [[1172,1022],[748,989],[735,569],[1159,536]],
+                [[932,1001],[488,980],[483,560],[945,564]],
+                [[1050,1085],[597,1056],[597,649],[1075,636]]]
+RC.panelCap.set_panelCorners(panelCorners)
+RC.computeRa2Re()
+```
+
+```{python}
+for k in range(len(imageNames)):
+    RC.loadImage(imageNames[k])
+    RC.save_undistorted_reflectance(outImageNames[k])
+```
+
+```{python}
+
+```
+
+##  2019-10-18-beihaihongshulin1 panel 100m5ms_2
+
+```{python}
+fold = '/media/jxd/无人机数据备份盘1/integration_system/data'
+day = '2019-10-18-beihaihongshulin1'
+height = '191018_145242_100m5ms_2'
+number = ['000', '001', '002', '003', '004', '005','006', '007']
+src_fold = '0000SET'
+dst_fold = '0000SET_ref_panel'
+imagePath0 = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', src_fold, number[0])
+outPath0 = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', dst_fold, number[0])
+
+imageNames = []
+outImageNames = []
+for num in range(10):
+    filename = 'IMG_000' + str(num) +'_'
+    
+    imageName = os.path.join(imagePath0, filename)
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+    
+for num in range(10, 99):
+    filename = 'IMG_00' + str(num) +'_' 
+    
+    imageName = os.path.join(imagePath0, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+    
+for num in range(100, 200):
+    filename = 'IMG_0' + str(num) +'_' 
+    
+    imageName = os.path.join(imagePath0, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+
+for k in [1, 2]:
+    imagePathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', src_fold, number[k])
+    outPathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                             'Camera_1', dst_fold, number[k])
+    for num in range(200*k, 200*k+200):
+            filename = 'IMG_0' + str(num) +'_' 
+            imageName = os.path.join(imagePathk, filename )
+            imageNames.append(imageName)
+
+            outImageName = os.path.join(outPathk, filename)
+            outImageNames.append(outImageName)
+
+            
+imagePathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                     'Camera_1', src_fold, number[3])
+outPathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', dst_fold, number[3])
+for num in range(600, 621):
+    filename = 'IMG_0' + str(num) +'_'
+    
+    imageName = os.path.join(imagePathk, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPathk, filename)
+    outImageNames.append(outImageName)
+
+
+```
+
+```{python}
+RC = RaCaCap.RadioCalibrate()
+
+panelFile = []
+for i in range(1,6):
+    panelFile.append(os.path.join(imagePath0, 'IMG_0000_' + str(i) + '.tif'))
+
+RC.loadPanel(panelFile)
+panelCorners = [[[1230,1004],[840,975],[831,567],[1259,563]],
+                [[1477,1010],[1045,985],[1100,584],[1477,580]],
+                [[1465,856],[1041,827],[1075,407],[1494,433]],
+                [[1221,841],[823,811],[865,417],[1272,417]],
+                [[1360,916],[965,887],[965,484],[1377,493]]]
+RC.panelCap.set_panelCorners(panelCorners)
+RC.computeRa2Re()
+```
+
+```{python}
+for k in range(len(imageNames)):
+    RC.loadImage(imageNames[k])
+    RC.save_undistorted_reflectance(outImageNames[k])
+```
+
+```{python}
+
+```
+
+## 2019-10-19-beihaihongshulin2 80m5ms
+
+```{python}
+fold = '/media/jxd/无人机数据备份盘1/integration_system/data'
+day = '2019-10-19-beihaihongshulin2'
+height = '191019_112211_80m5ms'
+number = ['000', '001', '002', '003', '004', '005','006', '007']
+src_fold = '0000SET'
+dst_fold = '0000SET_ref_panel'
+imagePath0 = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', src_fold, number[0])
+outPath0 = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', dst_fold, number[0])
+
+imageNames = []
+outImageNames = []
+for num in range(10):
+    filename = 'IMG_000' + str(num) +'_'
+    
+    imageName = os.path.join(imagePath0, filename)
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+    
+for num in range(10, 99):
+    filename = 'IMG_00' + str(num) +'_' 
+    
+    imageName = os.path.join(imagePath0, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+    
+for num in range(100, 200):
+    filename = 'IMG_0' + str(num) +'_' 
+    
+    imageName = os.path.join(imagePath0, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+
+for k in [1, 2]:
+    imagePathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', src_fold, number[k])
+    outPathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                             'Camera_1', dst_fold, number[k])
+    for num in range(200*k, 200*k+200):
+            filename = 'IMG_0' + str(num) +'_' 
+            imageName = os.path.join(imagePathk, filename )
+            imageNames.append(imageName)
+
+            outImageName = os.path.join(outPathk, filename)
+            outImageNames.append(outImageName)
+
+            
+imagePathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                     'Camera_1', src_fold, number[3])
+outPathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', dst_fold, number[3])
+for num in range(600, 728):
+    filename = 'IMG_0' + str(num) +'_'
+    
+    imageName = os.path.join(imagePathk, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPathk, filename)
+    outImageNames.append(outImageName)
+
+
+```
+
+```{python}
+RC = RaCaCap.RadioCalibrate()
+
+panelFile = []
+for i in range(1,6):
+    panelFile.append(os.path.join(imagePath0, 'IMG_0000_' + str(i) + '.tif'))
+
+RC.loadPanel(panelFile)
+panelCorners = [[[1049,1012],[688,1049],[642,730],[978,663]],
+                [[1255,969],[894,1011],[856,742],[1192,679]],
+                [[1259,860],[886,914],[827,612],[1188,556]],
+                [[1058,847],[714,868],[659,604],[978,549]],
+                [[1154,914],[777,981],[756,679],[1100,641]]]
+RC.panelCap.set_panelCorners(panelCorners)
+RC.computeRa2Re()
+```
+
+```{python}
+for k in range(len(imageNames)):
+    RC.loadImage(imageNames[k])
+    RC.save_undistorted_reflectance(outImageNames[k])
+```
+
+```{python}
+
+```
+
+## 2019-10-19-beihaihongshulin2 100m5ms
+
+```{python}
+fold = '/media/jxd/无人机数据备份盘1/integration_system/data'
+day = '2019-10-19-beihaihongshulin2'
+height = '191019_125157_100m5ms'
+number = ['000', '001', '002', '003', '004', '005','006', '007']
+src_fold = '0000SET'
+dst_fold = '0000SET_ref_panel'
+imagePath0 = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', src_fold, number[0])
+outPath0 = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', dst_fold, number[0])
+
+imageNames = []
+outImageNames = []
+for num in range(10):
+    filename = 'IMG_000' + str(num) +'_'
+    
+    imageName = os.path.join(imagePath0, filename)
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+    
+for num in range(10, 99):
+    filename = 'IMG_00' + str(num) +'_' 
+    
+    imageName = os.path.join(imagePath0, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+    
+for num in range(100, 200):
+    filename = 'IMG_0' + str(num) +'_' 
+    
+    imageName = os.path.join(imagePath0, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+
+for k in [1, 2]:
+    imagePathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', src_fold, number[k])
+    outPathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                             'Camera_1', dst_fold, number[k])
+    for num in range(200*k, 200*k+200):
+            filename = 'IMG_0' + str(num) +'_' 
+            imageName = os.path.join(imagePathk, filename )
+            imageNames.append(imageName)
+
+            outImageName = os.path.join(outPathk, filename)
+            outImageNames.append(outImageName)
+
+            
+imagePathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                     'Camera_1', src_fold, number[3])
+outPathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', dst_fold, number[3])
+for num in range(600, 744):
+    filename = 'IMG_0' + str(num) +'_'
+    
+    imageName = os.path.join(imagePathk, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPathk, filename)
+    outImageNames.append(outImageName)
+
+
+```
+
+```{python}
+fold = '/media/jxd/无人机数据备份盘1/integration_system/data'
+day = '2019-10-19-beihaihongshulin2'
+height = '191019_112211_80m5ms'
+number = ['000', '001', '002', '003', '004', '005','006', '007']
+src_fold = '0000SET'
+dst_fold = '0000SET_ref_panel'
+imagePath0 = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', src_fold, number[0])
+RC = RaCaCap.RadioCalibrate()
+
+panelFile = []
+for i in range(1,6):
+    panelFile.append(os.path.join(imagePath0, 'IMG_0000_' + str(i) + '.tif'))
+
+RC.loadPanel(panelFile)
+panelCorners = [[[1049,1012],[688,1049],[642,730],[978,663]],
+                [[1255,969],[894,1011],[856,742],[1192,679]],
+                [[1259,860],[886,914],[827,612],[1188,556]],
+                [[1058,847],[714,868],[659,604],[978,549]],
+                [[1154,914],[777,981],[756,679],[1100,641]]]
+RC.panelCap.set_panelCorners(panelCorners)
+RC.computeRa2Re()
+```
+
+```{python}
+k
+```
+
+```{python}
+for k in range(len(imageNames)):
+    RC.loadImage(imageNames[k])
+    RC.save_undistorted_reflectance(outImageNames[k])
+```
+
+## 2019-10-21-fangchenggang 80m 5ms
+
+```{python}
+fold = '/media/jxd/无人机数据备份盘1/integration_system/data'
+day = '2019-10-21-fangchenggang'
+height = '191021_151522_80m5ms_1'
+number = ['000', '001', '002', '003', '004', '005','006', '007']
+src_fold = '0006SET'
+dst_fold = '0006SET_ref_panel'
+imagePath0 = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', src_fold, number[0])
+outPath0 = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', dst_fold, number[0])
+
+imageNames = []
+outImageNames = []
+for num in range(10):
+    filename = 'IMG_000' + str(num) +'_'
+    
+    imageName = os.path.join(imagePath0, filename)
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+    
+for num in range(10, 99):
+    filename = 'IMG_00' + str(num) +'_' 
+    
+    imageName = os.path.join(imagePath0, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+    
+for num in range(100, 200):
+    filename = 'IMG_0' + str(num) +'_' 
+    
+    imageName = os.path.join(imagePath0, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPath0, filename)
+    outImageNames.append(outImageName)
+
+for k in [1]:
+    imagePathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', src_fold, number[k])
+    outPathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                             'Camera_1', dst_fold, number[k])
+    for num in range(200*k, 200*k+200):
+            filename = 'IMG_0' + str(num) +'_' 
+            imageName = os.path.join(imagePathk, filename )
+            imageNames.append(imageName)
+
+            outImageName = os.path.join(outPathk, filename)
+            outImageNames.append(outImageName)
+
+            
+imagePathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                     'Camera_1', src_fold, number[2])
+outPathk = os.path.join(fold, day, height, '04_CAM_RAW','03_IMG',
+                         'Camera_1', dst_fold, number[2])
+for num in range(400, 575):
+    filename = 'IMG_0' + str(num) +'_'
+    
+    imageName = os.path.join(imagePathk, filename )
+    imageNames.append(imageName)
+    
+    outImageName = os.path.join(outPathk, filename)
+    outImageNames.append(outImageName)
+
+
+```
+
+```{python}
+RC = RaCaCap.RadioCalibrate()
+
+panelFile = []
+for i in range(1,6):
+    panelFile.append(os.path.join(imagePath0, 'IMG_0000_' + str(i) + '.tif'))
+
+RC.loadPanel(panelFile)
+panelCorners = [[[821,550],[556,818],[284,537],[544,302]],
+                [[1043,583],[762,827],[510,567],[791,311]],
+                [[1056,437],[758,672],[493,411],[791,176]],
+                [[821,428],[552,663],[305,403],[582,189]],
+                [[905,495],[636,717],[405,474],[665,264]]]
+RC.panelCap.set_panelCorners(panelCorners)
+RC.computeRa2Re()
+```
+
+```{python}
+imageNames[k]
+```
+
+```{python}
+for k in range(400, len(imageNames)):
+    RC.loadImage(imageNames[k])
+    RC.save_undistorted_reflectance(outImageNames[k])
+```
