@@ -1,3 +1,4 @@
+# +
 import micasense.plotutils as plotutils
 import cv2
 import matplotlib.pyplot as plt
@@ -15,6 +16,9 @@ from skimage import measure
 
 from osgeo import gdal, osr
 import subprocess
+
+
+# -
 
 class Radio_calib:
     def __init__(self):
@@ -190,4 +194,4 @@ class Radio_calib:
 
         subprocess.Popen(["exiftool","-tagsFromFile" , self.imageName, "-all:all>all:all", "-xmp",
                          "-r", "-overwrite_original", outImageNage])
-        
+
